@@ -16,6 +16,9 @@ class WechatConfig {
     /** 开发者密码 */
     private String APP_SECRET
 
+    /** 用户在微信服务器配置写的token */
+    private String TOKEN
+
     public static final String RESP_MESSAGE_TYPE_TEXT = "text"
     public static final String REQ_MESSAGE_TYPE_TEXT = "text"
     public static final String REQ_MESSAGE_TYPE_IMAGE = "image"
@@ -36,8 +39,10 @@ class WechatConfig {
     public static final String Event = "Event"
 
     WechatConfig(
-            @Value('${hoody.wechat.app-id:null}') String APP_ID,
-            @Value('${hoody.wechat.app-secret:null}') String APP_SECRET) {
+            @Value('${hoody.wechat.app-id}') String APP_ID,
+            @Value('${hoody.wechat.app-secret}') String APP_SECRET,
+            @Value('${hoody.wechat.token}') String TOKEN
+    ) {
         if (APP_ID == null || APP_SECRET == null) {
             log.warn("""缺少微信开发者信息:
 wechat.app-id='xxx'
@@ -45,6 +50,7 @@ wechat.app-secret='xxx'
 需要在application配置文件中声明
 """)
         }
+        this.TOKEN = TOKEN
         this.APP_ID = APP_ID
         this.APP_SECRET = APP_SECRET
         log.info(this.toString())
@@ -57,5 +63,9 @@ wechat.app-secret='xxx'
 
     String getAPP_SECRET() {
         return APP_SECRET
+    }
+
+    String getTOKEN() {
+        return TOKEN
     }
 }
