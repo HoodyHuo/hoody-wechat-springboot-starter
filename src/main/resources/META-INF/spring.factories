@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=vip.hoody.wechat.config.StarterConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+vip.hoody.wechat.config.ConfigurationPropertiesAutoConfiguration,\
+  vip.hoody.wechat.config.WechatStarterAutoScanConfiguration

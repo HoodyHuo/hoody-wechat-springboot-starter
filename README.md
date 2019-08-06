@@ -40,8 +40,9 @@ hoody:
   wechat:
     app-id: 'your appid'
     app-secret: 'your appSecret'
-    token-rate: 7200000  #(ms) access_token refreash rate(default:7200000)
-    mapping
+    token: 'abc'   #微信服务器配置的令牌(Token),个人随便填的那个
+    token-rate: 7200  # 单位: 秒 access_token refreash rate(default:7200)
+    url: 'your url' #微信填写的服务器地址 eg. /wechat
 ``` 
 
 ### 4.实现`vip.hoody.wechat.IWechatHandler`接口

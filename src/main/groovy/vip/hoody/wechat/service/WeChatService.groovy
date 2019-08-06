@@ -13,6 +13,9 @@ import vip.hoody.wechat.bean.reply.ReplyBaseMsg
 class WeChatService {
     private static final Logger log = LoggerFactory.getLogger(this.class)
 
+    /**
+     * 处理器接口,使用项目实现接口
+     */
     @Autowired
     private IWechatHandler wechatHandler
 

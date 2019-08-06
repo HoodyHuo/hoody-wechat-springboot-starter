@@ -1,8 +1,0 @@
-#微信开发者信息
-hoody:
-  wechat:
-    url: 'wechat'
-    app-id: ''
-    app-secret: ''
-    token: ''
-    token-rate: 7200000
