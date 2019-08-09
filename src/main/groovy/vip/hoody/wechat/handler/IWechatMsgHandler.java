@@ -1,8 +1,8 @@
 package vip.hoody.wechat.handler;
 
-import vip.hoody.wechat.bean.event.EventBaseMsg;
-import vip.hoody.wechat.bean.received.*;
-import vip.hoody.wechat.bean.reply.ReplyBaseMsg;
+import vip.hoody.wechat.domain.event.EventBaseMsg;
+import vip.hoody.wechat.domain.received.*;
+import vip.hoody.wechat.domain.reply.ReplyBaseMsg;
 
 /**
  * 消息处理接口

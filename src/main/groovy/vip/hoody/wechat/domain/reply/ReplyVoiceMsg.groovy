@@ -1,4 +1,4 @@
-package vip.hoody.wechat.bean.reply
+package vip.hoody.wechat.domain.reply
 
 /**
  * <xml>

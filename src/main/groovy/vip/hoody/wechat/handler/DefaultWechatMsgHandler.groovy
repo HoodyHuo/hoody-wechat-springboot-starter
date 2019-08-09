@@ -1,10 +1,10 @@
 package vip.hoody.wechat.handler
 
 
-import vip.hoody.wechat.bean.event.EventBaseMsg
-import vip.hoody.wechat.bean.received.*
-import vip.hoody.wechat.bean.reply.ReplyBaseMsg
-import vip.hoody.wechat.bean.reply.ReplyTextMsg
+import vip.hoody.wechat.domain.event.EventBaseMsg
+import vip.hoody.wechat.domain.received.*
+import vip.hoody.wechat.domain.reply.ReplyBaseMsg
+import vip.hoody.wechat.domain.reply.ReplyTextMsg
 
 /**
  * 当 用户没有注入 IWechatMsgHandler 的时候,注入这个

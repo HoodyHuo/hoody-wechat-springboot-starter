@@ -1,6 +1,6 @@
-package vip.hoody.wechat.bean.event
+package vip.hoody.wechat.domain.event
 
-import vip.hoody.wechat.bean.received.ReceivedBaseMsg
+import vip.hoody.wechat.domain.received.ReceivedBaseMsg
 
 
 /**
