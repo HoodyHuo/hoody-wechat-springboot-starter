@@ -9,6 +9,12 @@ import vip.hoody.wechat.handler.DefaultWechatMsgHandler;
 import vip.hoody.wechat.handler.IWechatEventHandler;
 import vip.hoody.wechat.handler.IWechatMsgHandler;
 
+/**
+ * 注入配置类
+ * inject default handler and manager
+ *
+ * @author Hoody
+ */
 @Configuration
 public class ConfigurationPropertiesAutoConfiguration {
 

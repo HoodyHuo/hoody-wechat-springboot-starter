@@ -1,6 +1,5 @@
 package vip.hoody.wechat.api
 
-import groovy.json.JsonSlurper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,13 +20,11 @@ public class CustomMenuAPI {
 
     private HttpUtil httpUtil
     private WeChatApi weChatApi
-    private JsonSlurper jsonSlurper
 
     @Autowired
     CustomMenuAPI(HttpUtil httpUtil, WeChatApi weChatApi) {
         this.weChatApi = weChatApi
         this.httpUtil = httpUtil
-        this.jsonSlurper = new JsonSlurper()
     }
 
     /**
@@ -70,9 +67,8 @@ public class CustomMenuAPI {
                 "${MENU_URL}/delete?access_token=${weChatApi.accessToken}",
                 null
         )
-        def data = jsonSlurper.parseText(result)
-        if (data.errcode != 0) {
-            throw new WechatException("delete Menu fail :${data?.errmsg}")
+        if (result.errcode != 0) {
+            throw new WechatException("delete Menu fail :${result?.errmsg}")
         }
     }
 }

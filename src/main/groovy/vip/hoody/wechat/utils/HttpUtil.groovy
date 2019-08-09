@@ -23,7 +23,7 @@ class HttpUtil {
      * @param variables 请求参数 ,会添加在url中
      * @return
      */
-    ResponseEntity<String> doGetRequest(
+    Map<String, Object> doGetRequest(
             String url,
             @Nullable Map<String, ?> variables) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
@@ -34,7 +34,8 @@ class HttpUtil {
         }
         final String finalUrl = builder.build().encode().toUri()
         // 发起Get请求
-        return restTemplate.getForEntity(finalUrl, String.class)
+        Map<String, Object> result = restTemplate.getForObject(finalUrl, Map.class)
+        return result
     }
 
     /**

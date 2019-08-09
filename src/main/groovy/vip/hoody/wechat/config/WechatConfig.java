@@ -6,7 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 微信配置类
+ * 微信配置类,读取用户配置
+ * @author Hoody
  */
 @Component
 @ConfigurationProperties(

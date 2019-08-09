@@ -27,9 +27,8 @@ class Menu {
     boolean removeButton(BaseButton btn) {
         return this.buttons.remove(btn)
     }
-
+    
     String toParam() {
-        //TODO Menu toParam
         String btns = ""
         this.buttons.each { BaseButton btn ->
             btns += "${btn.toParam()},"
@@ -43,6 +42,7 @@ class Menu {
     }
 
     static Menu parse(String json) {
+        //TODO 解析菜单
         return new Menu()
     }
 }
