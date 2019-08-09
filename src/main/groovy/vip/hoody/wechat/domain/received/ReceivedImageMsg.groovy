@@ -1,4 +1,4 @@
-package vip.hoody.wechat.bean.received
+package vip.hoody.wechat.domain.received
 
 /**
  * 图片

@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import vip.hoody.wechat.handler.IWechatMsgHandler
 import vip.hoody.wechat.WeChatFactory
-import vip.hoody.wechat.bean.received.ReceivedBaseMsg
-import vip.hoody.wechat.bean.reply.ReplyBaseMsg
+import vip.hoody.wechat.domain.received.ReceivedBaseMsg
+import vip.hoody.wechat.domain.reply.ReplyBaseMsg
 
 @Service
 class WeChatService {

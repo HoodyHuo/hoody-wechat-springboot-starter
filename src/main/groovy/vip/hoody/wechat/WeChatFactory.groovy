@@ -2,9 +2,9 @@ package vip.hoody.wechat
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import vip.hoody.wechat.bean.event.EventBaseMsg
-import vip.hoody.wechat.bean.received.*
-import vip.hoody.wechat.bean.reply.ReplyTextMsg
+import vip.hoody.wechat.domain.event.EventBaseMsg
+import vip.hoody.wechat.domain.received.*
+import vip.hoody.wechat.domain.reply.ReplyTextMsg
 import vip.hoody.wechat.config.WechatConfig
 import vip.hoody.wechat.exception.WechatException
 import vip.hoody.wechat.exception.WechatParseXmlException
