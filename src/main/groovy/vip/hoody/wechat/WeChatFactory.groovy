@@ -2,7 +2,13 @@ package vip.hoody.wechat
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import vip.hoody.wechat.domain.event.EventBaseMsg
+import vip.hoody.wechat.domain.event.BaseEvent
+import vip.hoody.wechat.domain.event.LocationEvent
+import vip.hoody.wechat.domain.event.MenuClickEvent
+import vip.hoody.wechat.domain.event.MenuViewEvent
+import vip.hoody.wechat.domain.event.ScanQREvent
+import vip.hoody.wechat.domain.event.ScanQRUnSubEvent
+import vip.hoody.wechat.domain.event.SubscribeEvent
 import vip.hoody.wechat.domain.received.*
 import vip.hoody.wechat.domain.reply.ReplyTextMsg
 import vip.hoody.wechat.config.WechatConfig
@@ -15,7 +21,7 @@ import java.security.NoSuchAlgorithmException
 class WeChatFactory {
     private static final Logger log = LoggerFactory.getLogger(this.class)
 
-    static ReceivedBaseMsg getWechatReceivedMsg(InputStream xml) {
+    static Object getWechatReceivedMsg(InputStream xml) {
         Map<String, String> params = parseXml(xml)
         if (params.get("MsgType") == null) {
             throw new WechatParseXmlException("xml错误:${xml} \n 转换结果: ${params.toString()}")
@@ -103,17 +109,106 @@ class WeChatFactory {
                 break
         /** 事件推送 */
             case WechatConfig.REQ_MESSAGE_TYPE_EVENT:
-                EventBaseMsg msg = new EventBaseMsg(
+                return eventDispatch(params)
+                break
+            default:
+                throw new WechatException("未知类型消息:${params.MsgType} 消息原文:${params}")
+        }
+    }
+
+    /**
+     * 根据Event 类型创建Event 对象
+     * @param params
+     * @return
+     */
+    static BaseEvent eventDispatch(Map<String, String> params) {
+        switch (params.Event) {
+        /** 订阅事件 */
+            case WechatConfig.EVENT_TYPE_SUBSCRIBE:
+                /** 未关注扫描也会先触发订阅事件 */
+                if (params.Ticket != null) {
+                    return new ScanQRUnSubEvent(
+                            params.ToUserName,
+                            params.FromUserName,
+                            params.CreateTime,
+                            params.MsgType,
+                            params.Event,
+                            params.EventKey,
+                            params.Ticket
+                    )
+                }
+                /** 订阅事件 */
+                else {
+                    return new SubscribeEvent(
+                            params.ToUserName,
+                            params.FromUserName,
+                            params.CreateTime,
+                            params.MsgType,
+                            params.Event
+                    )
+                }
+                break
+        /** 取消订阅事件 */
+            case WechatConfig.EVENT_TYPE_UNSUBSCRIBE:
+                return new ScanQRUnSubEvent(
                         params.ToUserName,
                         params.FromUserName,
                         params.CreateTime,
                         params.MsgType,
                         params.Event,
+                        params.EventKey,
+                        params.Ticket
                 )
-                return msg
+                break
+        /** 已订阅用户扫码事件 */
+            case WechatConfig.EVENT_TYPE_SCAN:
+                return new ScanQREvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey,
+                        params.Ticket
+                )
+                break
+        /** 用户上报定位事件 */
+            case WechatConfig.EVENT_TYPE_LOCATION:
+                return new LocationEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.Latitude,
+                        params.Longitude,
+                        params.Precision
+                )
+                break
+        /** 用户菜单点击事件 */
+            case WechatConfig.EVENT_TYPE_CLICK:
+                return new MenuClickEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+                break
+        /** 用户菜单网页进入事件 */
+            case WechatConfig.EVENT_TYPE_VIEW:
+                return new MenuViewEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
                 break
             default:
-                throw new WechatException("未知类型消息:${params.MsgType} 消息原文:${xml}")
+                throw new WechatException("未知类型Event消息:${params.Event} 消息原文:${params}")
         }
     }
 
