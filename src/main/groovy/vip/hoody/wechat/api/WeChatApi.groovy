@@ -52,4 +52,11 @@ class WeChatApi {
         }
     }
 
+    /**
+     * Wechat Access_token
+     * @return
+     */
+    String getAccessToken() {
+        return Token
+    }
 }
