@@ -1,6 +1,5 @@
 package vip.hoody.wechat.handler;
 
-import vip.hoody.wechat.domain.event.EventBaseMsg;
 import vip.hoody.wechat.domain.received.*;
 import vip.hoody.wechat.domain.reply.ReplyBaseMsg;
 
@@ -23,7 +22,5 @@ public interface IWechatMsgHandler {
     ReplyBaseMsg handle(ReceivedVideoMsg msg);
 
     ReplyBaseMsg handle(ReceivedVoiceMsg msg);
-
-    ReplyBaseMsg handle(EventBaseMsg msg);
 
 }

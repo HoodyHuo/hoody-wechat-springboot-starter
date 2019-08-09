@@ -1,7 +1,6 @@
 package vip.hoody.wechat.handler
 
 
-import vip.hoody.wechat.domain.event.EventBaseMsg
 import vip.hoody.wechat.domain.received.*
 import vip.hoody.wechat.domain.reply.ReplyBaseMsg
 import vip.hoody.wechat.domain.reply.ReplyTextMsg
@@ -46,10 +45,5 @@ class DefaultWechatMsgHandler implements IWechatMsgHandler {
     @Override
     ReplyBaseMsg handle(ReceivedVoiceMsg msg) {
         return new ReplyTextMsg(msg.fromUserName, msg.toUserName, new Date().getTime().toString(), "你在发是:音频信息")
-    }
-
-    @Override
-    ReplyBaseMsg handle(EventBaseMsg msg) {
-        return new ReplyTextMsg(msg.fromUserName, msg.toUserName, new Date().getTime().toString(), "你在发是:图片信息")
     }
 }
