@@ -45,11 +45,12 @@ hoody:
     url: 'your url' #微信填写的服务器地址 eg. /wechat
 ``` 
 
-### 4.实现`vip.hoody.wechat.IWechatHandler`接口
+### 4.实现`vip.hoody.wechat.handler.IWechatMsgHandler`接口
 
-实现接口,响应收到的微信信息  
+实现接口并注入Spring,响应收到的微信信息,  
 `WechatHandlerImpl.java`
 ```java
+@Component
 public class WechatMsgHandler implements IWechatHandler {
 
     @Override

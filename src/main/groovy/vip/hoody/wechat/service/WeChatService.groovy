@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import vip.hoody.wechat.IWechatHandler
+import vip.hoody.wechat.handler.IWechatMsgHandler
 import vip.hoody.wechat.WeChatFactory
 import vip.hoody.wechat.bean.received.ReceivedBaseMsg
 import vip.hoody.wechat.bean.reply.ReplyBaseMsg
@@ -17,7 +17,7 @@ class WeChatService {
      * 处理器接口,使用项目实现接口
      */
     @Autowired
-    private IWechatHandler wechatHandler
+    private IWechatMsgHandler wechatHandler
 
 
     /**

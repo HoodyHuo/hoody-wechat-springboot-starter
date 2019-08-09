@@ -56,5 +56,4 @@ class WeChatController {
     String handleUserMsg(HttpServletRequest request) {
         return weChatService.processRequest(request.getInputStream())
     }
-
 }

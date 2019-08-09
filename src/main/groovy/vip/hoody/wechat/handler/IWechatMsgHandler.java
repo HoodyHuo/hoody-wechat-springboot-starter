@@ -1,4 +1,4 @@
-package vip.hoody.wechat;
+package vip.hoody.wechat.handler;
 
 import vip.hoody.wechat.bean.event.EventBaseMsg;
 import vip.hoody.wechat.bean.received.*;
@@ -8,7 +8,7 @@ import vip.hoody.wechat.bean.reply.ReplyBaseMsg;
  * 消息处理接口
  * 实现接口,返回消息对象
  */
-public interface IWechatHandler {
+public interface IWechatMsgHandler {
 
     ReplyBaseMsg handle(ReceivedTextMsg msg);
 
