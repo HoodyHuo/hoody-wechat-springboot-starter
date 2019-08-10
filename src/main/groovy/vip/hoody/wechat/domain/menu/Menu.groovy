@@ -1,13 +1,12 @@
-package vip.hoody.wechat.domain.menu;
+package vip.hoody.wechat.domain.menu
 
-
-import vip.hoody.wechat.domain.menu.button.BaseButton;
+import vip.hoody.wechat.domain.menu.button.*
 import vip.hoody.wechat.exception.WechatMenuSizeException;
 
 /**
  * 微信自定义菜单
  */
-class Menu {
+class Menu implements Serializable {
 
     private static final int MAX_BUTTON = 3
 
@@ -27,7 +26,7 @@ class Menu {
     boolean removeButton(BaseButton btn) {
         return this.buttons.remove(btn)
     }
-    
+
     String toParam() {
         String btns = ""
         this.buttons.each { BaseButton btn ->
@@ -41,8 +40,19 @@ class Menu {
         return param
     }
 
-    static Menu parse(String json) {
-        //TODO 解析菜单
-        return new Menu()
+    static Menu parse(Map<String, Object> data) {
+        Menu menu = new Menu()
+        data.button.each { btn ->
+            if (btn.sub_button.size() == 0) {
+                menu.addButton(ButtonFactory.createButton(btn.type, btn))
+            } else {
+                SubButton subButton = new SubButton(btn.name)
+                btn.sub_button.each { sub ->
+                    subButton.addButton(ButtonFactory.createButton(sub.type, sub))
+                }
+                menu.buttons.add(subButton)
+            }
+        }
+        return menu
     }
 }

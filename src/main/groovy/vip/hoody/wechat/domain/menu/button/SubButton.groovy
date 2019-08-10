@@ -30,7 +30,7 @@ class SubButton extends BaseButton {
     String toParam() {
         String subs = ""
         this.buttons.each {
-            subs += it.toParam()
+            subs += "${it.toParam()},"
         }
 
         return """

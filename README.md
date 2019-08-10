@@ -88,10 +88,6 @@ public class WechatMsgHandler implements IWechatHandler {
         return new ReplyTextMsg(msg.fromUserName, msg.toUserName, new Date().getTime().toString(), "你在发是:音频信息");
     }
 
-    @Override
-    public ReplyBaseMsg handle(EventBaseMsg msg) {
-        return new ReplyTextMsg(msg.fromUserName, msg.toUserName, new Date().getTime().toString(), "你在发是:图片信息");
-    }
 }
 ```
 

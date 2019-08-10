@@ -50,11 +50,14 @@ public class CustomMenuAPI {
      * @return 返回的菜单对象
      */
     public Menu getMenu() {
-        String result = httpUtil.doGetRequest(
+        Map<String, Object> result = httpUtil.doGetRequest(
                 "${MENU_URL}/get?access_token=${weChatApi.accessToken}",
                 null
         )
-        Menu menu = Menu.parse(result)
+        if (result.errcode && result.errcode != 0) {
+            throw new WechatException("get Menu fail :${result?.errmsg}")
+        }
+        Menu menu = Menu.parse(result.menu)
         return menu
     }
 
@@ -63,7 +66,7 @@ public class CustomMenuAPI {
      * @return isDelete
      */
     public void deletMenu() {
-        String result = httpUtil.doGetRequest(
+        Map<String, Object> result = httpUtil.doGetRequest(
                 "${MENU_URL}/delete?access_token=${weChatApi.accessToken}",
                 null
         )
