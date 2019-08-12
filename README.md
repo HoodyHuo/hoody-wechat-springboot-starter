@@ -95,6 +95,11 @@ public class WechatMsgHandler implements IWechatHandler {
 所有返回信息继承`ReplyBaseMsg`,  
 可通过`WeChatFactory`创建返回信息
 
+## 自定义菜单API
+1.使用`CustomMenuAPI` 类进行菜单创建,删除,查询  
+2.对应菜单按钮使用`vip.hoody.wechat.domain.menu` 包下的对象  
+3.TODO 个性化菜单接口未做
+
 ## 待续
 1.上传/下载 微信多媒体信息  
 2.完善 `WeChatFactory`  
