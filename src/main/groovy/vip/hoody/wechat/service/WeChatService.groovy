@@ -38,7 +38,7 @@ class WeChatService {
             return replyBaseMsg.toXml()
         } catch (Exception e) {
             log.warn("处理用户微信消息出现异常", e)
-            return WeChatFactory.createTextReply(userMsg, "处理用户微信消息出现异常").toXml()
+            return WeChatFactory.createTextReply(msg, "处理用户微信消息出现异常").toXml()
         }
     }
 
