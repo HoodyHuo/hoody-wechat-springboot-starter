@@ -1,24 +1,20 @@
 package vip.hoody.wechat.api
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.configurationprocessor.json.JSONException
+import org.springframework.boot.configurationprocessor.json.JSONArray
 import org.springframework.boot.configurationprocessor.json.JSONObject
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
-import org.springframework.http.client.ClientHttpRequest
 import org.springframework.http.client.ClientHttpResponse
-import org.springframework.http.client.SimpleBufferingClientHttpRequest
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import org.springframework.web.client.RequestCallback
 import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestTemplate
 import vip.hoody.wechat.domain.media.MaterialType
-import vip.hoody.wechat.domain.media.Media
 import vip.hoody.wechat.domain.media.MediaItem
 import vip.hoody.wechat.domain.media.MediaNewsPage
 import vip.hoody.wechat.domain.media.MediaOtherPage
@@ -47,8 +43,6 @@ import vip.hoody.wechat.utils.HttpUtil
 @Component
 class MediaAPI {
 
-    private static final String baseUrl = "https://api.weixin.qq.com/cgi-bin/media"
-
     @Autowired
     private HttpUtil httpUtil
 
@@ -61,6 +55,10 @@ class MediaAPI {
         this.restTemplate = new RestTemplate()
     }
 
+    /**
+     * 获取微信访问令牌
+     * @return access_token
+     */
     String getAccessToken() {
         return weChatApi.getAccessToken()
     }
@@ -77,17 +75,27 @@ class MediaAPI {
      *
      * @throws WechatMediaException
      */
-    JSONObject uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
+    Map<String, String> uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
+        //检查文件是否符合微信要求
         fileCheck(filePath, type)
-        String url = "${baseUrl}/upload?access_token=${getAccessToken()}&type=${type.toString()}"
+        //接口地址
+        String url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${getAccessToken()}&type=${type.toString()}"
+        //创建请求参数
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>()
         parts.add("file", new FileSystemResource(filePath))
+        //发送请求
         String resultString = restTemplate.postForObject(url, parts, String.class)
         JSONObject result = new JSONObject(resultString)
+        //判断微信接口响应
         if (!result.isNull("errcode")) {
             throw new WechatMediaException("upload media fail :${result.toString()}")
         }
-        return result
+        //返回数据
+        return [
+                type      : result.getString("type"),
+                media_id  : result.getString("media_id"),
+                created_at: result.getString("created_at"),
+        ]
     }
 
     /**
@@ -97,62 +105,76 @@ class MediaAPI {
      * @return file 临时目录下的文件
      */
     File getTemporaryMedia(String mediaId) {
+        //微信接口地址
         String url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=${getAccessToken()}&media_id=${mediaId}"
 
-        File mediaFile = restTemplate.execute(url, HttpMethod.GET, null, new ResponseExtractor<File>() {
-            @Override
-            File extractData(ClientHttpResponse response) throws IOException {
-                if (response.getHeaders().getContentType() == org.springframework.http.MediaType.TEXT_PLAIN) {
-                    InputStream inputStream = response.getBody()
-                    byte[] bytes = new byte[inputStream.available()]
-                    inputStream.read(bytes)
-                    String str = new String(bytes)
-                    JSONObject result = new JSONObject(str)
-                    if (!result.isNull("errcode")) {
-                        throw new WechatMediaException("get Temporary Media fail :${result.toString()}")
+        File mediaFile = restTemplate.execute(url, HttpMethod.GET, null,
+                //自定义处理器
+                new ResponseExtractor<File>() {
+                    @Override
+                    File extractData(ClientHttpResponse response) throws IOException {
+                        //判断响应数据类型,如果是text/plain 则解析内容
+                        if (response.getHeaders().getContentType() == org.springframework.http.MediaType.TEXT_PLAIN) {
+                            InputStream inputStream = response.getBody()
+                            byte[] bytes = new byte[inputStream.available()]
+                            inputStream.read(bytes)
+                            String str = new String(bytes)
+                            JSONObject result = new JSONObject(str)
+                            //判断响应数据是否微信错误提示
+                            if (!result.isNull("errcode")) {
+                                throw new WechatMediaException("get Temporary Media fail :${result.toString()}")
+                            }
+                            //如果是视频地址,则下载
+                            String videoUrl = new JSONObject(str).getString("video_url")
+                            return downloadVideo(videoUrl)
+                        }
+                        //如果不是文本,则直接将输入流保存为文件
+                        else {
+                            InputStream inputStream = response.getBody()
+                            //获取文件名
+                            String filename = response.getHeaders().getContentDisposition().getFilename()
+                            //使用返回文件名创建临时文件,并写入输入流
+                            File file = File.createTempFile(
+                                    filename.substring(0, filename.lastIndexOf(".")),
+                                    filename.substring(filename.lastIndexOf("."), filename.length())
+                            )
+                            file.deleteOnExit()
+                            FileOutputStream fileOutputStream = new FileOutputStream(file)
+                            byte[] bytes = new byte[1024]
+                            int ch
+                            while ((ch = inputStream.read(bytes)) > -1) {
+                                fileOutputStream.write(bytes, 0, ch);
+                            }
+                            fileOutputStream.close()
+                            //返回临时文件
+                            return file
+                        }
                     }
-                    String videoUrl = new JSONObject(str).getString("video_url")
-                    return downloadVideo(videoUrl)
-                } else {
-                    InputStream inputStream = response.getBody()
-                    String filename = response.getHeaders().getContentDisposition().getFilename()
-                    File file = File.createTempFile(
-                            filename.substring(0, filename.lastIndexOf(".")),
-                            filename.substring(filename.lastIndexOf("."), filename.length())
-                    )
-                    file.deleteOnExit()
-                    FileOutputStream fileOutputStream = new FileOutputStream(file)
-                    byte[] bytes = new byte[1024]
-                    int ch
-                    while ((ch = inputStream.read(bytes)) > -1) {
-                        fileOutputStream.write(bytes, 0, ch);
-                    }
-                    fileOutputStream.close();
-
-                    return file
-                }
-            }
-        })
+                })
 
         return mediaFile
     }
 
     /**
-     * 下载文件并存储到临时文件夹
-     * @param url
-     * @return
+     * 下载文件并存储到临时文件
+     * @param url 文件地址
+     * @return file 临时文件
      */
     protected File downloadVideo(url) {
         File mediaFile = restTemplate.execute(url, HttpMethod.GET, null, new ResponseExtractor<File>() {
             @Override
             File extractData(ClientHttpResponse response) throws IOException {
+                //获取输入流
                 InputStream inputStream = response.getBody()
+                //获取文件名
                 String filename = response.getHeaders().getContentDisposition().getFilename()
+                //使用响应文件名,创建临时文件
                 File file = File.createTempFile(
                         filename.substring(0, filename.lastIndexOf(".")),
                         filename.substring(filename.lastIndexOf("."), filename.length())
                 )
                 file.deleteOnExit()
+                //写入输入流到临时文件
                 FileOutputStream fileOutputStream = new FileOutputStream(file)
                 byte[] bytes = new byte[1024]
                 int ch
@@ -160,28 +182,34 @@ class MediaAPI {
                     fileOutputStream.write(bytes, 0, ch);
                 }
                 fileOutputStream.close();
+                //返回文件
                 return file
             }
         })
         return mediaFile
     }
 
-
     /**
      * 上传图文消息内的图片
      * @param imgFilePath 图片仅支持jpg/png格式
-     * @return 图片url
+     * @return 图片访问url
      */
     String uploadNewsImg(String imgFilePath) {
+        //检查文件是否符合微信接口要求
         fileCheck(imgFilePath, MediaType.IMAGE)
+        //接口地址
         String url = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=${getAccessToken()}"
+        //准备请求参数
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>()
         parts.add("file", new FileSystemResource(imgFilePath))
+        //发送请求,获取响应内容
         String resultString = restTemplate.postForObject(url, parts, String.class)
         JSONObject result = new JSONObject(resultString)
+        //根据返回值判断是否上传成功
         if (result.isNull("url")) {
             throw new WechatMediaException("upload news images fail :${result.toString()}")
         }
+        //返回上传成功后访问的url
         return result.getString("url")
     }
 
@@ -251,6 +279,7 @@ class MediaAPI {
         //添加Json
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8)
+        //微信接口要求的视频描述参数
         String description = """{
                                     "title":"${title}",
                                     "introduction":"${introduction}"
@@ -270,13 +299,17 @@ class MediaAPI {
      * 视频（video）上传使用uploadVideoMedia 方法
      * @param filePath
      * @param type
-     * @return
+     * @return 微信素材media_id
      */
     String uploadMedia(String filePath, MediaType type) {
+        //检查上传文件是否符合微信接口要求
         fileCheck(filePath, type)
+        //微信接口地址
         String url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=${getAccessToken()}&type=${type.key}"
+        //准备参数
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>()
         parts.add("media", new FileSystemResource(filePath))
+        //发送请求并分析结果
         String resultString = restTemplate.postForObject(url, parts, String.class)
         JSONObject result = new JSONObject(resultString)
         if (!result.isNull("errcode")) {
@@ -289,18 +322,25 @@ class MediaAPI {
      * 获取永久素材总数
      * 开发者可以根据本接口来获取"永久素材"的列表，需要时也可保存到本地。
      * 图片和图文消息素材（包括单图文和多图文）的总数上限为5000，其他素材的总数上限为1000
-     *  "voice_count":COUNT,
-     *   "video_count":COUNT,
-     *   "image_count":COUNT,
-     *   "news_count":COUNT
-     * @return
+     * @return map <pre>
+     *  "voice_count":COUNT,<br>
+     *  "video_count":COUNT,<br>
+     *  "image_count":COUNT,<br>
+     *  "news_count":COUNT<br>
+     *  </pre>
      */
-    Map<String, String> getMediaCount() {
-        Map<String, String> result = httpUtil.doGetRequest(
-                "https://api.weixin.qq.com/cgi-bin/material/get_materialcount",
-                ["access)token": weChatApi.getAccessToken()]
-        )
-        return result
+    Map<String, Integer> getMediaCount() {
+        String url = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=${getAccessToken()}"
+        String result = restTemplate.getForObject(url, String.class)
+        JSONObject jsonObject = new JSONObject(result)
+        if (!jsonObject.isNull("errcode")) {
+            throw new WechatMediaException("get media count fail :${result.toString()}")
+        }
+
+        return ["voice_count": jsonObject.getInt("voice_count"),
+                "video_count": jsonObject.getInt("video_count"),
+                "image_count": jsonObject.getInt("image_count"),
+                "news_count" : jsonObject.getInt("news_count")]
     }
 
     /**
@@ -369,32 +409,38 @@ class MediaAPI {
 
     /**
      *  获取图文永久素材
+     *  其他类型 使用 getMedia(mediaId)
      * @param mediaId
      */
     List<NewsItem> getNewsMedia(String mediaId) {
-        Map<String, Object> result = httpUtil.doPostRequestWithJson(
-                "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=${weChatApi.getAccessToken()}",
-                """{"media_id":"${mediaId}" }"""
-        )
-        if (result.news_item != null) {
-            List<NewsItem> list = new ArrayList<>()
-            result.news_item.each { Map<String, String> item ->
-                NewsItem newsItem = new NewsItem(
-                        item.title,
-                        item.thumb_media_id,
-                        item.show_cover_pic,
-                        item.author,
-                        item.digest,
-                        item.content,
-                        item.url,
-                        item.content_source_url
-                )
-                list << newsItem
-            }
-            return list
-        } else {
-            throw new WechatMediaException("get news media  fail :${result.toString()}")
+        String url = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=${getAccessToken()}"
+        String param = """{"media_id":"${mediaId}" }"""
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8)
+        headers.setAccept([org.springframework.http.MediaType.APPLICATION_JSON_UTF8])
+        HttpEntity<String> entity = new HttpEntity<String>(param, headers)
+        String result = restTemplate.postForObject(url, entity, String.class)
+        JSONObject object = new JSONObject(result)
+        if (!object.isNull("errcode")) {
+            throw new WechatMediaException("get news media fail :${result}")
         }
+        List<NewsItem> list = new ArrayList<>()
+        JSONArray items = object.getJSONArray("news_item")
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = (JSONObject) items.get(i)
+            NewsItem newsItem = new NewsItem(
+                    item.getString("title"),
+                    item.getString("thumb_media_id"),
+                    item.getString("show_cover_pic"),
+                    item.getString("author"),
+                    item.getString("digest"),
+                    item.getString("content"),
+                    item.getString("url"),
+                    item.getString("content_source_url")
+            )
+            list << newsItem
+        }
+        return list
     }
 
     /**
@@ -429,47 +475,6 @@ class MediaAPI {
             fileOutputStream.close()
             return file
         }
-//
-//
-//        RequestCallback request = restTemplate.httpEntityCallback(httpEntity, null)
-//        File mediaFile = restTemplate.execute(url, HttpMethod.GET, request,
-//                new ResponseExtractor<File>() {
-//                    @Override
-//                    File extractData(ClientHttpResponse response) throws IOException {
-//                        if (response.getHeaders().getContentType() == org.springframework.http.MediaType.TEXT_PLAIN) {
-//                            InputStream inputStream = response.getBody()
-//                            byte[] bytes = new byte[inputStream.available()]
-//                            inputStream.read(bytes)
-//                            String str = new String(bytes)
-//                            JSONObject result = new JSONObject(str)
-//                            if (!result.isNull("errcode")) {
-////                                println(result.toString())
-//                                throw new WechatMediaException("get Media fail :${result.toString()}")
-//                            }
-//                            String videoUrl = new JSONObject(str).getString("down_url")
-//                            return downloadVideo(videoUrl)
-//                        } else {
-//                            InputStream inputStream = response.getBody()
-//                            String filename = response.getHeaders().getContentDisposition().getFilename()
-//                            File file = File.createTempFile(
-//                                    filename.substring(0, filename.lastIndexOf(".")),
-//                                    filename.substring(filename.lastIndexOf("."), filename.length())
-//                            )
-//                            file.deleteOnExit()
-//                            FileOutputStream fileOutputStream = new FileOutputStream(file)
-//                            byte[] bytes = new byte[1024]
-//                            int ch
-//                            while ((ch = inputStream.read(bytes)) > -1) {
-//                                fileOutputStream.write(bytes, 0, ch);
-//                            }
-//                            fileOutputStream.close();
-//
-//                            return file
-//                        }
-//                    }
-//                })
-//
-//        return mediaFile
     }
 
     /**
@@ -488,7 +493,7 @@ class MediaAPI {
 
 
     /**
-     * 检查上传素材
+     * 检查上传素材文件
      * @param filePath
      * @param type
      */
