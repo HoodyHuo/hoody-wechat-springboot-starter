@@ -481,13 +481,18 @@ class MediaAPI {
      * 删除永久素材
      * @param mediaId 素材ID
      */
-    void deleteMediaMaterial(String mediaId) {
-        Map<String, Object> result = httpUtil.doPostRequestWithJson(
-                "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=${weChatApi.getAccessToken()}",
-                """{"media_id":"${mediaId}"} """
-        )
-        if (result.errcode != null && result.errcode != 0) {
-            throw new WechatMediaException("delete media material fail :${result.toString()}")
+    void deleteMedia(String mediaId) {
+        String url = "https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=${getAccessToken()}"
+        String param = """{"media_id":"${mediaId}"} """
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8)
+        headers.setAccept([org.springframework.http.MediaType.APPLICATION_JSON_UTF8])
+        HttpEntity<String> entity = new HttpEntity<String>(param, headers)
+        String result = restTemplate.postForObject(url, entity, String.class)
+
+        JSONObject object = new JSONObject(result)
+        if (object.getString("errcode") != "0") {
+            throw new WechatMediaException("delete media material fail :${result}")
         }
     }
 
