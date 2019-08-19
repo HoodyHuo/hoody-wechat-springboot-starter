@@ -9,7 +9,12 @@ import java.util.Map;
 
 /**
  * @author Hoody
- * wechat media manage api
+ * wechat media manage api <br>
+ * <pre>
+ * use:<br>
+ *     @Autowired
+ *     IMediaApi mediaAPI
+ * </pre>
  */
 public interface IMediaApi {
 
@@ -155,6 +160,14 @@ public interface IMediaApi {
      */
     MediaOtherPage getMediaOtherList(MediaType type, int offset, int count) throws WechatMediaException;
 
+    /**
+     * get news media list
+     *
+     * @param offset offset (start from 0) 从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
+     * @param count  count (1-20) 返回素材的数量，取值在1到20之间
+     * @return news media list
+     * @throws WechatMediaException api error
+     */
     MediaNewsPage getMediaNewsList(int offset, int count) throws WechatMediaException;
 }
 
