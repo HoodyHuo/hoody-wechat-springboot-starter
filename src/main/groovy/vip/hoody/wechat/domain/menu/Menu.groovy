@@ -29,14 +29,15 @@ class Menu implements Serializable {
 
     String toParam() {
         String btns = ""
-        this.buttons.each { BaseButton btn ->
-            btns += "${btn.toParam()},"
+        for (int i = 0; i < this.buttons.size(); i++) {
+            BaseButton btn = this.buttons.get(i)
+            btns += "${i != 0 ? "," : ""}${btn.toParam()}"
         }
         String param = """
-{
-    "button":[${btns}]
-}
-"""
+                        {
+                            "button": [${btns}]
+                        }
+                        """
         return param
     }
 

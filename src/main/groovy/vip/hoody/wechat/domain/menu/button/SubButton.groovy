@@ -8,7 +8,7 @@ import vip.hoody.wechat.exception.WechatMenuSizeException
  */
 class SubButton extends BaseButton {
     private List<BaseButton> buttons
-    private static final int MAX_BUTTON = 3
+    private static final int MAX_BUTTON = 5
 
     SubButton(String name) {
         super(name, ButtonType.SUB_BUTTON)
@@ -29,8 +29,9 @@ class SubButton extends BaseButton {
     @Override
     String toParam() {
         String subs = ""
-        this.buttons.each {
-            subs += "${it.toParam()},"
+        for (int i = 0; i < this.buttons.size(); i++) {
+            BaseButton btn = this.buttons.get(i)
+            subs += "${i != 0 ? "," : ""}${btn.toParam()}"
         }
 
         return """

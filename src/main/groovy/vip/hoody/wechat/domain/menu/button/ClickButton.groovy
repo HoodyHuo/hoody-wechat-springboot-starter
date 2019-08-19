@@ -23,7 +23,7 @@ public class ClickButton extends BaseButton {
 {
     "type":"click",
     "name":"${this.name}",
-    "key":"${this.key}",
+    "key":"${this.key}"
 }
 """
     }

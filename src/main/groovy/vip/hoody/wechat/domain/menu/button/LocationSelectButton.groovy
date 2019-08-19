@@ -21,7 +21,7 @@ public class LocationSelectButton extends BaseButton {
 {
     "type":"${this.type}",
     "name":"${this.name}",
-    "key":"${this.key}",
+    "key":"${this.key}"
 }
 """
     }
