@@ -41,13 +41,12 @@ public class CustomMenuAPI implements IMenuApi {
      * @return request body
      */
     void createMenu(Menu menu) {
-        String url = "${MENU_URL}/create?access_token=${weChatApi.accessToken}"
+        String url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${weChatApi.accessToken}"
         String paramJSON = menu.toParam()
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8)
         HttpEntity<String> entity = new HttpEntity<String>(paramJSON, headers)
         Map<String, Object> result = restTemplate.postForObject(url, entity, Map.class)
-
         if (result?.errcode && result.errcode != 0) {
             throw new WechatException("create menu fail :${result.toString()}")
         }

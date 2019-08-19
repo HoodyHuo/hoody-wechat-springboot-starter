@@ -4,11 +4,17 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import vip.hoody.wechat.domain.event.BaseEvent
 import vip.hoody.wechat.domain.event.LocationEvent
-import vip.hoody.wechat.domain.event.MenuClickEvent
-import vip.hoody.wechat.domain.event.MenuViewEvent
+import vip.hoody.wechat.domain.event.menu.ClickEvent
+import vip.hoody.wechat.domain.event.menu.LocationSelectEvent
+import vip.hoody.wechat.domain.event.menu.PicPhotoOrAlbumEvent
+import vip.hoody.wechat.domain.event.menu.PicSysPhotoEvent
+import vip.hoody.wechat.domain.event.menu.PicWeixinEvent
+import vip.hoody.wechat.domain.event.menu.ScanCodePushEvent
+import vip.hoody.wechat.domain.event.menu.ScanCodeWaitEvent
 import vip.hoody.wechat.domain.event.ScanQREvent
 import vip.hoody.wechat.domain.event.ScanQRUnSubEvent
 import vip.hoody.wechat.domain.event.SubscribeEvent
+import vip.hoody.wechat.domain.event.menu.ViewEvent
 import vip.hoody.wechat.domain.received.*
 import vip.hoody.wechat.domain.reply.ReplyTextMsg
 import vip.hoody.wechat.config.WechatConfig
@@ -187,7 +193,7 @@ class WeChatFactory {
                 break
         /** 用户菜单点击事件 */
             case WechatConfig.EVENT_TYPE_CLICK:
-                return new MenuClickEvent(
+                return new ClickEvent(
                         params.ToUserName,
                         params.FromUserName,
                         params.CreateTime,
@@ -198,7 +204,7 @@ class WeChatFactory {
                 break
         /** 用户菜单网页进入事件 */
             case WechatConfig.EVENT_TYPE_VIEW:
-                return new MenuViewEvent(
+                return new ViewEvent(
                         params.ToUserName,
                         params.FromUserName,
                         params.CreateTime,
@@ -207,6 +213,78 @@ class WeChatFactory {
                         params.EventKey
                 )
                 break
+        /**
+         * 扫码推事件且弹出“消息接收中”提示框用户点击按钮后，
+         * 微信客户端将调起扫一扫工具，完成扫码操作后，将扫码的结果传给开发者，
+         * 同时收起扫一扫工具，然后弹出“消息接收中”提示框，
+         * 随后可能会收到开发者下发的消息。*/
+            case WechatConfig.EVENT_TYPE_SCAN_CODE_PUSH:
+                return new ScanCodePushEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+                break
+        /**
+         * 扫码推事件用户点击按钮后，微信客户端将调起扫一扫工具，
+         * 完成扫码操作后显示扫描结果（如果是URL，将进入URL），
+         * 且会将扫码的结果传给开发者，开发者可以下发消息
+         */
+            case WechatConfig.EVENT_TYPE_SCAN_CODE_WAIT:
+                return new ScanCodeWaitEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+                break
+        /**
+         * 弹出地理位置选择器用户点击按钮后，
+         * 微信客户端将调起地理位置选择工具，完成选择操作后，
+         * 将选择的地理位置发送给开发者的服务器，同时收起位置选择工具，
+         * 随后可能会收到开发者下发的消息
+         */
+            case WechatConfig.EVENT_TYPE_LOCATION_SELECT:
+                return new LocationSelectEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+            case WechatConfig.EVENT_TYPE_PIC_SYS_PHOTO:
+                return new PicSysPhotoEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+            case WechatConfig.EVENT_TYPE_PIC_WEIXIN:
+                return new PicWeixinEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
+            case WechatConfig.EVENT_TYPE_PIC_SYS_OR_ALBUM:
+                return new PicPhotoOrAlbumEvent(
+                        params.ToUserName,
+                        params.FromUserName,
+                        params.CreateTime,
+                        params.MsgType,
+                        params.Event,
+                        params.EventKey
+                )
             default:
                 throw new WechatException("未知类型Event消息:${params.Event} 消息原文:${params}")
         }
