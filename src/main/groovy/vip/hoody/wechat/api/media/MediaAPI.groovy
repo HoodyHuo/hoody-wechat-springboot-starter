@@ -28,7 +28,6 @@ import vip.hoody.wechat.exception.WechatMediaException
  * 2、公众号的素材库保存总数量有上限：图文消息素材、图片素材上限为5000，其他类型为1000。
  * 3、素材的格式大小等要求与公众平台官网一致：
  *
- * TODO 素材管理
  */
 @Component
 class MediaAPI implements IMediaApi {
@@ -144,7 +143,6 @@ class MediaAPI implements IMediaApi {
      * @param count 返回素材的数量 ，取值在1到20之间
      */
     MediaNewsPage getMediaNewsList(int offset, int count) {
-        //TODO 请求次数受限
         String url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=${weChatApi.getAccessToken()}"
         String param = """{"type":"news","offset":${offset},"count":${count}}"""
 

@@ -144,8 +144,6 @@ public interface IMediaApi {
      */
     Map<String, Integer> getMediaCount() throws WechatMediaException;
 
-    //todo 获取素材列表
-
     /**
      * get media list (extra news type)
      *
