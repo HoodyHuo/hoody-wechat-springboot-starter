@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import vip.hoody.wechat.api.IMediaApi
 import vip.hoody.wechat.api.WeChatApi
-import vip.hoody.wechat.domain.media.MaterialType
-import vip.hoody.wechat.domain.media.MediaItem
 import vip.hoody.wechat.domain.media.MediaNewsPage
 import vip.hoody.wechat.domain.media.MediaOtherPage
 import vip.hoody.wechat.domain.media.NewsItem

@@ -17,7 +17,6 @@ class MediaNewsPage {
      * 图文素材详情
      */
     List<NewsMedia> newsItemList
-
     /**
      *
      * @param totalCount

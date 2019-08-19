@@ -92,17 +92,20 @@ class NewsMediaApi {
      * @throws WechatMediaException api error
      */
     void updateMedia(String mediaId, NewsItem item, String index) {
-        Map<String, String> result = httpUtil.doPostRequestWithJson(
-                "https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=${getAccessToken()}",
-                """
-                    {  
-                        "media_id":"${mediaId}",
-                        "index":"${index}",
-                        "articles": ${item.toJSON()}
-                    }"""
-        )
-        if (result.errcode != null && result.errcode != 0) {
-            throw new WechatMediaException("update news fail:${result.toString()}")
+        String url = "https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=${getAccessToken()}"
+        String params = """{
+                                "media_id":"${mediaId}",
+                                "index":"${index}",
+                                "articles":${item.toJSON()}
+                            }"""
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8)
+        HttpEntity<String> entity = new HttpEntity<String>(params, headers)
+        String resultStr = restTemplate.postForObject(url, entity, String.class)
+        JSONObject result = new JSONObject(resultStr)
+
+        if (result.getString("errcode") != "0") {
+            throw new WechatMediaException("update news fail:${resultStr}")
         }
     }
 

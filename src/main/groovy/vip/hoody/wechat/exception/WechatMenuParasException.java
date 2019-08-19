@@ -3,7 +3,7 @@ package vip.hoody.wechat.exception;
 /**
  * wechat Menu exception
  */
-public class WechatMenuParasException extends WechatException {
+public class WechatMenuParasException extends WechatMenuException {
     public WechatMenuParasException(String var1) {
         super(var1);
     }

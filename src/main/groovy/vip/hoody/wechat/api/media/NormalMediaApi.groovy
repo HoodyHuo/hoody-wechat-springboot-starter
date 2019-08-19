@@ -71,7 +71,7 @@ class NormalMediaApi {
      */
     String uploadVideoMedia(String filePath, String title, String introduction) throws WechatMediaException {
         // 检查文件
-        fileCheck(filePath, MediaType.VIDEO)
+        FileCheck.check(filePath, MediaType.VIDEO)
         String url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=${getAccessToken()}&type=${MediaType.VIDEO.key}"
         //准备参数
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>()
@@ -211,7 +211,7 @@ class NormalMediaApi {
                     item.getString("media_id"),
                     item.getString("name"),
                     item.getString("update_time"),
-                    item.getString("url")
+//                    item.getString("url")
             )
             page.getItems().add(mediaItem)
         }

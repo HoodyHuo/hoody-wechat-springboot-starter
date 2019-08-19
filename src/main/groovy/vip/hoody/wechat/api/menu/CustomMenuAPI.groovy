@@ -1,9 +1,16 @@
-package vip.hoody.wechat.api
+package vip.hoody.wechat.api.menu
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
+import vip.hoody.wechat.api.IMenuApi
+import vip.hoody.wechat.api.WeChatApi
 import vip.hoody.wechat.domain.menu.Menu
 import vip.hoody.wechat.exception.WechatException;
 import vip.hoody.wechat.utils.HttpUtil;
@@ -11,20 +18,20 @@ import vip.hoody.wechat.utils.HttpUtil;
 /**
  * @author Hoody* @since 2019年8月9日14:31:39
  * 自定义菜单接口
+ * TODO 验证
  */
 @Component
-public class CustomMenuAPI {
+public class CustomMenuAPI implements IMenuApi {
 
-    private static final Logger log = LoggerFactory.getLogger(CustomMenuAPI.class)
     private static final String MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu"
 
-    private HttpUtil httpUtil
+    private RestTemplate restTemplate
     private WeChatApi weChatApi
 
     @Autowired
-    CustomMenuAPI(HttpUtil httpUtil, WeChatApi weChatApi) {
+    CustomMenuAPI(RestTemplate restTemplate, WeChatApi weChatApi) {
         this.weChatApi = weChatApi
-        this.httpUtil = httpUtil
+        this.restTemplate = restTemplate
     }
 
     /**
@@ -33,15 +40,17 @@ public class CustomMenuAPI {
      * @param menu 自定义菜单
      * @return request body
      */
-    public String createMenu(Menu menu) {
+    void createMenu(Menu menu) {
+        String url = "${MENU_URL}/create?access_token=${weChatApi.accessToken}"
         String paramJSON = menu.toParam()
-        Map result = httpUtil.doPostRequestWithJson(
-                "${MENU_URL}/create?access_token=${weChatApi.accessToken}",
-                paramJSON)
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8)
+        HttpEntity<String> entity = new HttpEntity<String>(paramJSON, headers)
+        Map<String, Object> result = restTemplate.postForObject(url, entity, Map.class)
+
         if (result?.errcode && result.errcode != 0) {
             throw new WechatException("create menu fail :${result.toString()}")
         }
-        return paramJSON
     }
 
     /**
@@ -50,10 +59,9 @@ public class CustomMenuAPI {
      * @return 返回的菜单对象
      */
     public Menu getMenu() {
-        Map<String, Object> result = httpUtil.doGetRequest(
-                "${MENU_URL}/get?access_token=${weChatApi.accessToken}",
-                null
-        )
+        String url = "${MENU_URL}/get?access_token=${weChatApi.accessToken}"
+        Map<String, Object> result = restTemplate.getForObject(url, Map.class)
+
         if (result.errcode && result.errcode != 0) {
             throw new WechatException("get Menu fail :${result?.errmsg}")
         }
@@ -65,11 +73,9 @@ public class CustomMenuAPI {
      * 自定义菜单删除接口
      * @return isDelete
      */
-    public void deletMenu() {
-        Map<String, Object> result = httpUtil.doGetRequest(
-                "${MENU_URL}/delete?access_token=${weChatApi.accessToken}",
-                null
-        )
+    public void removeMenu() {
+        String url = "${MENU_URL}/delete?access_token=${weChatApi.accessToken}"
+        Map<String, Object> result = restTemplate.getForObject(url, Map.class)
         if (result.errcode != 0) {
             throw new WechatException("delete Menu fail :${result?.errmsg}")
         }

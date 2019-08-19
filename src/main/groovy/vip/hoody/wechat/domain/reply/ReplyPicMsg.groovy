@@ -24,8 +24,8 @@ class ReplyPicMsg extends ReplyBaseMsg {
      * @param msgType 消息类型，文本为image
      * @param mediaId 通过素材管理中的接口上传多媒体文件，得到的id。
      */
-    ReplyPicMsg(String toUserName, String fromUserName, String createTime, String msgType, String mediaId) {
-        super(toUserName, fromUserName, createTime, msgType)
+    ReplyPicMsg(String toUserName, String fromUserName, String createTime,String mediaId) {
+        super(toUserName, fromUserName, createTime, "image")
         MediaId = mediaId
     }
 
