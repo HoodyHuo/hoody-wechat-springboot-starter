@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 微信配置类,读取用户配置
+ *
  * @author Hoody
  */
 @Component
@@ -39,6 +40,9 @@ public class WechatConfig {
      */
     private String url = "wechat";
 
+    /**
+     * 消息类型
+     */
     public static final String REQ_MESSAGE_TYPE_TEXT = "text";
     public static final String REQ_MESSAGE_TYPE_IMAGE = "image";
     public static final String REQ_MESSAGE_TYPE_VOICE = "voice";
@@ -46,12 +50,25 @@ public class WechatConfig {
     public static final String REQ_MESSAGE_TYPE_LOCATION = "location";
     public static final String REQ_MESSAGE_TYPE_LINK = "link";
     public static final String REQ_MESSAGE_TYPE_EVENT = "event";
+
+    /**
+     * 事件类型
+     */
     public static final String EVENT_TYPE_SUBSCRIBE = "subscribe";
     public static final String EVENT_TYPE_UNSUBSCRIBE = "unsubscribe";
     public static final String EVENT_TYPE_SCAN = "SCAN";
     public static final String EVENT_TYPE_LOCATION = "LOCATION";
+    /**
+     * 自定义菜单事件类型
+     */
     public static final String EVENT_TYPE_CLICK = "CLICK";
     public static final String EVENT_TYPE_VIEW = "VIEW";
+    public static final String EVENT_TYPE_SCAN_CODE_WAIT = "scancode_waitmsg";
+    public static final String EVENT_TYPE_SCAN_CODE_PUSH = "scancode_push";
+    public static final String EVENT_TYPE_LOCATION_SELECT = "location_select";
+    public static final String EVENT_TYPE_PIC_SYS_PHOTO = "pic_sysphoto";
+    public static final String EVENT_TYPE_PIC_SYS_OR_ALBUM = "pic_photo_or_album";
+    public static final String EVENT_TYPE_PIC_WEIXIN = "pic_weixin";
 
 
     @Override
