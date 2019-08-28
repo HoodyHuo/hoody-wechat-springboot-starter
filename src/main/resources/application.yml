@@ -1,0 +1,8 @@
+#微信开发者信息
+hoody:
+  wechat:
+    app-id: 'xxx'
+    app-secret: 'xxx'
+    #    token-rate: 5 #2 hours
+    #    url: 'wechat'
+    token: 'mywxtoken'
