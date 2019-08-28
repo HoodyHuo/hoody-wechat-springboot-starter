@@ -34,4 +34,12 @@ public class ScanCodePushButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "ScanCodePushButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

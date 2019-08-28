@@ -33,4 +33,12 @@ public class PicWeixinButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "PicWeixinButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

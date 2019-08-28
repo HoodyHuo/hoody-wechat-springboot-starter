@@ -36,4 +36,14 @@ public class MiniProgrammaButton extends BaseButton {
         }
         """
     }
+
+    @Override
+    public String toString() {
+        return "MiniProgrammaButton{" +
+                "url='" + url + '\'' +
+                ", appid='" + appid + '\'' +
+                ", pagepath='" + pagepath + '\'' +
+                super.toString() +
+                "} "
+    }
 }

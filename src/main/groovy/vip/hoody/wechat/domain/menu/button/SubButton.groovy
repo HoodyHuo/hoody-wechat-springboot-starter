@@ -41,4 +41,12 @@ class SubButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "SubButton{" +
+                "buttons=" + buttons +
+                super.toString() +
+                "} "
+    }
 }

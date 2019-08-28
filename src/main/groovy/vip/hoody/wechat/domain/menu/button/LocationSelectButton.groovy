@@ -33,4 +33,12 @@ public class LocationSelectButton extends BaseButton {
     public void setKey(String key) {
         this.key = key;
     }
+
+    @Override
+    public String toString() {
+        return "LocationSelectButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

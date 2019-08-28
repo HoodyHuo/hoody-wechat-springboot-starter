@@ -56,4 +56,11 @@ class Menu implements Serializable {
         }
         return menu
     }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "buttons=" + buttons +
+                '}';
+    }
 }

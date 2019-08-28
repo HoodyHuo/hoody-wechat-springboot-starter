@@ -35,4 +35,11 @@ public class PicSysPhotoButton extends BaseButton {
 """
     }
 
+    @Override
+    public String toString() {
+        return "PicSysPhotoButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

@@ -55,4 +55,10 @@ public class BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "name='" + name + '\'' +
+                ", type=" + type
+    }
 }

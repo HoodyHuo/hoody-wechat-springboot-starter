@@ -35,4 +35,12 @@ public class ViewLimitedButton extends BaseButton {
         }
         """
     }
+
+    @Override
+    public String toString() {
+        return "ViewLimitedButton{" +
+                "mediaId='" + mediaId + '\'' +
+                super.toString() +
+                "} "
+    }
 }

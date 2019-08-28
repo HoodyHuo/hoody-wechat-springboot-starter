@@ -24,4 +24,12 @@ public class PicPhotoOrAlbumButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "PicPhotoOrAlbumButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

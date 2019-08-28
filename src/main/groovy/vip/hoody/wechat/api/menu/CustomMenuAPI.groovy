@@ -1,19 +1,16 @@
 package vip.hoody.wechat.api.menu
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.util.UriComponentsBuilder
 import vip.hoody.wechat.api.IMenuApi
-import vip.hoody.wechat.api.WeChatApi
+import vip.hoody.wechat.api.WechatApi
 import vip.hoody.wechat.domain.menu.Menu
-import vip.hoody.wechat.exception.WechatException;
-import vip.hoody.wechat.utils.HttpUtil;
+import vip.hoody.wechat.exception.WechatException
 
 /**
  * @author Hoody* @since 2019年8月9日14:31:39
@@ -26,10 +23,10 @@ public class CustomMenuAPI implements IMenuApi {
     private static final String MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu"
 
     private RestTemplate restTemplate
-    private WeChatApi weChatApi
+    private WechatApi weChatApi
 
     @Autowired
-    CustomMenuAPI(RestTemplate restTemplate, WeChatApi weChatApi) {
+    CustomMenuAPI(RestTemplate restTemplate, WechatApi weChatApi) {
         this.weChatApi = weChatApi
         this.restTemplate = restTemplate
     }

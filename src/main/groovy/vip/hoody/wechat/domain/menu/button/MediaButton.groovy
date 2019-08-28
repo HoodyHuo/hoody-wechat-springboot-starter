@@ -35,4 +35,12 @@ class MediaButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "MediaButton{" +
+                "mediaId='" + mediaId + '\'' +
+                super.toString() +
+                "} "
+    }
 }

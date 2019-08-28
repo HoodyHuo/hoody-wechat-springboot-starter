@@ -32,4 +32,12 @@ public class ViewButton extends BaseButton {
         }
         """
     }
+
+    @Override
+    public String toString() {
+        return "ViewButton{" +
+                "url='" + url + '\'' +
+                super.toString() +
+                "} "
+    }
 }

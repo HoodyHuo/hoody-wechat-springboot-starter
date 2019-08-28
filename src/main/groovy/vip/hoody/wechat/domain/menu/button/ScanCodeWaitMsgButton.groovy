@@ -34,4 +34,12 @@ public class ScanCodeWaitMsgButton extends BaseButton {
 }
 """
     }
+
+    @Override
+    public String toString() {
+        return "ScanCodeWaitMsgButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }

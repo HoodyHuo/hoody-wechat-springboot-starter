@@ -35,4 +35,12 @@ public class ClickButton extends BaseButton {
     public void setKey(String key) {
         this.key = key;
     }
+
+    @Override
+    public String toString() {
+        return "ClickButton{" +
+                "key='" + key + '\'' +
+                super.toString() +
+                "} "
+    }
 }
