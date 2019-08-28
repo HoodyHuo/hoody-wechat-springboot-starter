@@ -2,8 +2,10 @@ package vip.hoody.wechat.config;
 
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import vip.hoody.wechat.handler.DefaultEventHandler;
 import vip.hoody.wechat.handler.DefaultWechatMsgHandler;
 import vip.hoody.wechat.handler.IWechatEventHandler;
@@ -16,6 +18,7 @@ import vip.hoody.wechat.handler.IWechatMsgHandler;
  * @author Hoody
  */
 @Configuration
+@EnableConfigurationProperties
 public class ConfigurationPropertiesAutoConfiguration {
 
     public ConfigurationPropertiesAutoConfiguration() {

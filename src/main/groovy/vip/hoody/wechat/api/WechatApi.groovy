@@ -12,14 +12,14 @@ import vip.hoody.wechat.utils.HttpUtil
  * Wechat API util
  */
 @Component
-class WeChatApi {
+class WechatApi {
     private static final Logger log = LoggerFactory.getLogger(this.class)
     private WechatConfig wechatConfig
     private HttpUtil httpUtil
     private String Token
 
     @Autowired
-    WeChatApi(WechatConfig wechatConfig, HttpUtil httpUtil) {
+    WechatApi(WechatConfig wechatConfig, HttpUtil httpUtil) {
         this.wechatConfig = wechatConfig
         this.httpUtil = httpUtil
     }
@@ -42,7 +42,7 @@ class WeChatApi {
             log.info("Request Wechat Access-token success :${response.toString()}")
             return this.Token
         } else {
-            log.error("Request Wechat Access-token failed : app-id:${wechatConfig.appId} app-secret:${wechatConfig.appSecret} \n response: ${data} ")
+            log.error("Request Wechat Access-token failed : app-id:${wechatConfig.appId} app-secret:${wechatConfig.appSecret} \n response: ${response} ")
             return null
         }
     }
@@ -52,6 +52,9 @@ class WeChatApi {
      * @return
      */
     String getAccessToken() {
+        if (Token == null) {
+            refreshToken()
+        }
         return Token
     }
 }
