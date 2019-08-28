@@ -1,5 +1,6 @@
 package vip.hoody.wechat.api.media
 
+import com.alibaba.fastjson.JSON
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.configurationprocessor.json.JSONObject
 import org.springframework.core.io.FileSystemResource
@@ -10,8 +11,9 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestTemplate
-import vip.hoody.wechat.api.WeChatApi
+import vip.hoody.wechat.api.WechatApi
 import vip.hoody.wechat.domain.media.MediaType
+import vip.hoody.wechat.domain.media.TemporaryMediaUploadResult
 import vip.hoody.wechat.exception.WechatMediaException
 
 @Component
@@ -21,13 +23,13 @@ class TemporaryMediaApi {
     private RestTemplate restTemplate
 
     @Autowired
-    private WeChatApi weChatApi
+    private WechatApi weChatApi
 
     private String getAccessToken() {
         return weChatApi.getAccessToken()
     }
 
-    protected Map<String, String> uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
+    protected TemporaryMediaUploadResult uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
         //检查文件是否符合微信要求
         FileCheck.check(filePath, type)
         //接口地址
@@ -37,17 +39,11 @@ class TemporaryMediaApi {
         parts.add("file", new FileSystemResource(filePath))
         //发送请求
         String resultString = restTemplate.postForObject(url, parts, String.class)
-        JSONObject result = new JSONObject(resultString)
-        //判断微信接口响应
-        if (!result.isNull("errcode")) {
-            throw new WechatMediaException("upload media fail :${result.toString()}")
+        if (resultString.contains("errcode")) {
+            throw new WechatMediaException("upload media fail :${resultString}")
         }
-        //返回数据
-        return [
-                type      : result.getString("type"),
-                media_id  : result.getString("media_id"),
-                created_at: result.getString("created_at"),
-        ]
+        TemporaryMediaUploadResult result = JSON.parseObject(resultString, TemporaryMediaUploadResult.class)
+        return result
     }
 
     /**

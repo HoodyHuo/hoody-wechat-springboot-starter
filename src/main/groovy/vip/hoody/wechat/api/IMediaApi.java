@@ -32,7 +32,7 @@ public interface IMediaApi {
      * </pre>
      * @throws WechatMediaException api error
      */
-    Map<String, String> uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException;
+    TemporaryMediaUploadResult uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException;
 
     /**
      * 下载临时素材
@@ -139,15 +139,9 @@ public interface IMediaApi {
      * 获取永久素材总数<br>
      * 图片和图文消息素材（包括单图文和多图文）的总数上限为5000，其他素材的总数上限为1000
      *
-     * @return map <pre>
-     *      "voice_count":COUNT,<br>
-     *      "video_count":COUNT,<br>
-     *      "image_count":COUNT,<br>
-     *      "news_count":COUNT<br>
-     *      </pre>
      * @throws WechatMediaException api error
      */
-    Map<String, Integer> getMediaCount() throws WechatMediaException;
+    MediaCount getMediaCount() throws WechatMediaException;
 
     /**
      * get media list (extra news type)

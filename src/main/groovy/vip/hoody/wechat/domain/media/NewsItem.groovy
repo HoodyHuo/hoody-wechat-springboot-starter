@@ -205,4 +205,20 @@ class NewsItem {
     void setOnlyFansCanComment(String onlyFansCanComment) {
         this.onlyFansCanComment = onlyFansCanComment
     }
+
+    @Override
+    public String toString() {
+        return "NewsItem{" +
+                "title='" + title + '\'' +
+                ", thumbMediaId='" + thumbMediaId + '\'' +
+                ", showCoverPic='" + showCoverPic + '\'' +
+                ", author='" + author + '\'' +
+                ", digest='" + digest + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                ", contentSourceUrl='" + contentSourceUrl + '\'' +
+                ", needOpenComment='" + needOpenComment + '\'' +
+                ", onlyFansCanComment='" + onlyFansCanComment + '\'' +
+                '}';
+    }
 }

@@ -36,4 +36,13 @@ class MediaOtherPage {
     List<MediaItem> getItems() {
         return items
     }
+
+    @Override
+    public String toString() {
+        return "MediaOtherPage{" +
+                "totalCount=" + totalCount +
+                ", itemCount=" + itemCount +
+                ", items=" + items +
+                '}';
+    }
 }

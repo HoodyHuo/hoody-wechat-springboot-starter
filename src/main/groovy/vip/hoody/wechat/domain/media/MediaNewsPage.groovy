@@ -51,4 +51,13 @@ class MediaNewsPage {
     void setNewsItemList(List<NewsMedia> newsItemList) {
         this.newsItemList = newsItemList
     }
+
+    @Override
+    public String toString() {
+        return "MediaNewsPage{" +
+                "totalCount=" + totalCount +
+                ", itemCount=" + itemCount +
+                ", newsItemList=" + newsItemList +
+                '}';
+    }
 }

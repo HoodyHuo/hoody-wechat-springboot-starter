@@ -35,4 +35,13 @@ class NewsMedia {
     String getUpdateTime() {
         return updateTime
     }
+
+    @Override
+    public String toString() {
+        return "NewsMedia{" +
+                "mediaId='" + mediaId + '\'' +
+                ", content=" + content +
+                ", updateTime='" + updateTime + '\'' +
+                '}';
+    }
 }

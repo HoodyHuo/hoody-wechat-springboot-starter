@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
-import vip.hoody.wechat.api.WeChatApi
+import vip.hoody.wechat.api.WechatApi
 import vip.hoody.wechat.domain.media.MediaType
 import vip.hoody.wechat.domain.media.NewsItem
 import vip.hoody.wechat.exception.WechatMediaException
@@ -21,7 +21,7 @@ class NewsMediaApi {
     private RestTemplate restTemplate
 
     @Autowired
-    private WeChatApi weChatApi
+    private WechatApi weChatApi
 
     private String getAccessToken() {
         return weChatApi.getAccessToken()

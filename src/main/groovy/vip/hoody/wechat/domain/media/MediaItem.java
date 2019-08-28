@@ -36,4 +36,13 @@ public class MediaItem {
     public String getUpdateTime() {
         return updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "MediaItem{" +
+                "mediaId='" + mediaId + '\'' +
+                ", name='" + name + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                '}';
+    }
 }

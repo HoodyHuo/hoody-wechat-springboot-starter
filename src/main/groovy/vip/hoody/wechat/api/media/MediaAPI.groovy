@@ -8,12 +8,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import vip.hoody.wechat.api.IMediaApi
-import vip.hoody.wechat.api.WeChatApi
+import vip.hoody.wechat.api.WechatApi
+import vip.hoody.wechat.domain.media.MediaCount
 import vip.hoody.wechat.domain.media.MediaNewsPage
 import vip.hoody.wechat.domain.media.MediaOtherPage
 import vip.hoody.wechat.domain.media.NewsItem
 import vip.hoody.wechat.domain.media.MediaType
 import vip.hoody.wechat.domain.media.NewsMedia
+import vip.hoody.wechat.domain.media.TemporaryMediaUploadResult
 import vip.hoody.wechat.exception.WechatMediaException
 
 /**
@@ -33,7 +35,7 @@ import vip.hoody.wechat.exception.WechatMediaException
 class MediaAPI implements IMediaApi {
 
     @Autowired
-    WeChatApi weChatApi
+    WechatApi weChatApi
 
     @Autowired
     private TemporaryMediaApi temporaryMediaApi
@@ -44,7 +46,7 @@ class MediaAPI implements IMediaApi {
     @Autowired
     private NormalMediaApi normalMediaApi
 
-    Map<String, String> uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
+    TemporaryMediaUploadResult uploadTemporaryMedia(String filePath, MediaType type) throws WechatMediaException {
         return temporaryMediaApi.uploadTemporaryMedia(filePath, type)
     }
 
@@ -131,7 +133,7 @@ class MediaAPI implements IMediaApi {
      *      </pre>
      * @throws WechatMediaException api error
      */
-    Map<String, Integer> getMediaCount() {
+    MediaCount getMediaCount() {
         return normalMediaApi.getMediaCount()
     }
 

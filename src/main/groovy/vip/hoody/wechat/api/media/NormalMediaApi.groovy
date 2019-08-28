@@ -1,5 +1,6 @@
 package vip.hoody.wechat.api.media
 
+import com.alibaba.fastjson.JSON
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.configurationprocessor.json.JSONArray
 import org.springframework.boot.configurationprocessor.json.JSONObject
@@ -14,7 +15,8 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestTemplate
-import vip.hoody.wechat.api.WeChatApi
+import vip.hoody.wechat.api.WechatApi
+import vip.hoody.wechat.domain.media.MediaCount
 import vip.hoody.wechat.domain.media.MediaItem
 import vip.hoody.wechat.domain.media.MediaOtherPage
 import vip.hoody.wechat.domain.media.MediaType
@@ -26,7 +28,7 @@ class NormalMediaApi {
     private RestTemplate restTemplate
 
     @Autowired
-    private WeChatApi weChatApi
+    private WechatApi weChatApi
 
     private String getAccessToken() {
         return weChatApi.getAccessToken()
@@ -169,18 +171,14 @@ class NormalMediaApi {
      *      </pre>
      * @throws WechatMediaException api error
      */
-    Map<String, Integer> getMediaCount() {
+    MediaCount getMediaCount() {
         String url = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=${getAccessToken()}"
         String result = restTemplate.getForObject(url, String.class)
-        JSONObject jsonObject = new JSONObject(result)
-        if (!jsonObject.isNull("errcode")) {
-            throw new WechatMediaException("get media count fail :${result.toString()}")
+        if (result.contains("errcode")) {
+            throw new WechatMediaException("get media count fail :${result}")
         }
-
-        return ["voice_count": jsonObject.getInt("voice_count"),
-                "video_count": jsonObject.getInt("video_count"),
-                "image_count": jsonObject.getInt("image_count"),
-                "news_count" : jsonObject.getInt("news_count")]
+        MediaCount count = JSON.parseObject(result, MediaCount.class)
+        return count
     }
 
     /**
